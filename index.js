@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose');
 
 /**
  * Import MongoClient & connexion à la DB
@@ -14,11 +15,26 @@ MongoClient.connect(url, function(err, client) {
     db = client.db(dbName);
 });
 
+const username = "bmlaghui";
+const password = "bmlaghui";
+const cluster = "cluster0.9nhto";
+const dbname = "QCMQUIZ";
 
+mongoose.connect(
+    `mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}`,
+    {
+    }
+);
 app.use(express.json())
 
+const mydb = mongoose.connection;
+mydb.on("error", console.error.bind(console, "connection error: "));
+mydb.once("open", function () {
+    console.log("Connected successfully");
+});
+
 app.get('/', (req,res) => {
-    db.collection('D51.1').aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
+    mydb.collection('D51.1').aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
             "optionC": 1, "optionD": 1, "numero": 1}},
         {"$sample": {"size": 5}}]).toArray(function(err, docs) {
         if (err) {
@@ -32,7 +48,10 @@ app.get('/', (req,res) => {
 
 
 app.get('/questionsQCM/:matiere/:nbQuestions', (req,res, next) => {
-    db.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
+
+// @type {AggregationCursor}
+
+    mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
             "optionC": 1, "optionD": 1, "numero": 1}},
         {"$sample": {"size": parseInt(req.params.nbQuestions)}}]).toArray(function(err, docs) {
         if (err) {
