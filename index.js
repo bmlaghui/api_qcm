@@ -126,8 +126,6 @@ app.get('/questionsQUIZ/:matiere/:nbQuestions', (req,res, next) => {
 })
 
 
-const port = process.env.PORT || '8080';
-//app.listen(port, () => {
-  //  console.log("Serveur à l'écoute au port 5000")
-//})
-app.set("port", port)
+app.listen(process.env.PORT || 3000, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
