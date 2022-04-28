@@ -53,7 +53,7 @@ app.get('/questionsQCM/:matiere/:nbQuestions', (req,res, next) => {
 
 //formatted_data
 app.get('/questionsQUIZ/:matiere/:nbQuestions', (req,res, next) => {
-    db.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
+    mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
             "optionC": 1, "optionD": 1, "numero": 1}},
         {"$sample": {"size": parseInt(req.params.nbQuestions)}}]).toArray(function(err, docs) {
         if (err) {
