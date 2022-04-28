@@ -34,16 +34,7 @@ mydb.once("open", function () {
 });
 
 app.get('/', (req,res) => {
-    mydb.collection('D51.1').aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
-            "optionC": 1, "optionD": 1, "numero": 1}},
-        {"$sample": {"size": 5}}]).toArray(function(err, docs) {
-        if (err) {
-            console.log(err)
-            throw err
-        }
 
-        res.status(200).json(docs)
-    })
 })
 
 
