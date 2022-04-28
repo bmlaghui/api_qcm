@@ -12,7 +12,7 @@ const cluster = "cluster0.9nhto";
 const dbname = "QCMQUIZ";
 
 mongoose.connect(
-    `mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}`,
+    "mongodb+srv://"+username+":"+password+"@"+cluster+".mongodb.net/"+dbname,
     {
     }
 );
