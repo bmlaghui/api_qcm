@@ -49,6 +49,26 @@ app.get('/questionsQCM/:matiere/:nbQuestions', (req,res, next) => {
     })
 })
 
+app.get('/questionsExam/:matiere/:nbQuestions', (req,res, next) => {
+
+// @type {AggregationCursor}
+
+    mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 0, "optionA": 1, "optionB": 1,
+            "optionC": 1, "optionD": 1, "numero": 1}},
+        {"$sample": {"size": parseInt(req.params.nbQuestions)}}]).toArray(function(err, docs) {
+        if (err) {
+            console.log(err)
+            res.status(500);
+            return next(err);
+        }
+
+
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+
+        res.end(JSON.stringify(docs))
+    })
+})
+
 
 
 //formatted_data
