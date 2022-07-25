@@ -51,7 +51,7 @@ app.get('/questionsQCM/:matiere/:nbQuestions', (req,res, next) => {
 })
 
 app.get('/questionsExam/:matiere/:nbQuestions', (req,res, next) => {
-    mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
+    mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 1, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
             "optionC": 1, "optionD": 1, "numero": 1}},
         {"$sample": {"size": parseInt(req.params.nbQuestions)}}]).toArray(function(err, docs) {
         if (err) {
@@ -65,6 +65,7 @@ app.get('/questionsExam/:matiere/:nbQuestions', (req,res, next) => {
         for(item of docs) {
             var dict = {};
             i++
+            var id = item._id;
             var questionText = item.question;
             var optiona = {"text": item.optionA}
             var optionb = {"text": item.optionB}
@@ -76,6 +77,7 @@ app.get('/questionsExam/:matiere/:nbQuestions', (req,res, next) => {
 
             dict["questionText"] = questionText
             dict["options"] = options
+            dict["id"] = id
             dictALL[i] = dict
 
         }
