@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose');
+const {request} = require("express");
 
 /**
  * Import MongoClient & connexion à la DB
@@ -93,8 +94,6 @@ app.get('/questionsExam/:matiere/:nbQuestions', (req,res, next) => {
     })
 })
 
-
-
 //formatted_data
 app.get('/questionsQUIZ/:matiere/:nbQuestions', (req,res, next) => {
     mydb.collection(req.params.matiere).aggregate([{"$project": {"_id": 0, "question": 1, "correctOption": 1, "optionA": 1, "optionB": 1,
@@ -152,6 +151,28 @@ app.get('/questionsQUIZ/:matiere/:nbQuestions', (req,res, next) => {
 })
 
 
+//formatted_data
+app.get('/correction/:matiere/:idQuestion', (req,res, next) => {
+
+    var id = new require('mongodb').ObjectID(req.params.idQuestion);//req.params.id
+    const options = {
+        // sort matched documents in descending order by rating
+        // Include only the `title` and `imdb` fields in the returned document
+        projection: { _id: 0, question: 0, correctOption: 1, optionA: 0, optionB: 0,
+            optionC: 0, optionD: 0, numero: 0 }
+    };
+    mydb.collection(req.params.matiere).findOne({'_id':id}, { projection: { _id: 0, question: 0, optionA: 0,  optionB: 0, optionC: 0, optionD: 0, numero: 0   } })
+        .then(function(doc) {
+            if(!doc)
+                throw new Error('No record found.');
+            console.log(doc);//else case
+        });
+
+})
+
+
 app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
     console.log("Server is running.");
 });
+
+
