@@ -165,7 +165,10 @@ app.get('/correction/:matiere/:idQuestion', (req,res, next) => {
         .then(function(doc) {
             if(!doc)
                 throw new Error('No record found.');
-            console.log(doc);//else case
+
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
+            //console.log(JSON.stringify(dictRes))
+            res.end(JSON.stringify(doc));//else case
         });
 
 })
