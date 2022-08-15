@@ -176,13 +176,7 @@ app.get('/correction/:matiere/:idQuestion', (req,res, next) => {
 //formatted_data
 app.get('/loginVerif/:login/:password', (req,res, next) => {
 
-    const options = {
-        // sort matched documents in descending order by rating
-        // Include only the `title` and `imdb` fields in the returned document
-        projection: { _id: 0, question: 0, correctOption: 1, optionA: 0, optionB: 0,
-            optionC: 0, optionD: 0, numero: 0 }
-    };
-    mydb.collection("user").findOne({'email':req.params.login, 'password': req.params.password}, { projection: { _id: 0, nom: 1, prenom: 1   } })
+    mydb.collection("user").findOne({'email':req.params.login, 'password': req.params.password}, { projection: { _id: 1, nom: 1, prenom: 1   } })
         .then(function(doc) {
             if(!doc)
                 doc = 'No record found.';
