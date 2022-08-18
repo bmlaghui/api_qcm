@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose');
 const {request} = require("express");
+const {ObjectID} = require("mongodb");
 
 /**
  * Import MongoClient & connexion à la DB
@@ -187,6 +188,28 @@ app.get('/loginVerif/:login/:password', (req,res, next) => {
         });
 
 })
+
+//formatted_data
+app.get('/savenote/:userId/:idNote/:note', (req,res, next) => {
+    var id = new require('mongodb').ObjectID(req.params.userId);//req.params.id
+
+    var myquery = {_id : id, "epreuves.idnote" : req.params.idNote};
+
+    var newvalues = { $set: { "epreuves.$.note": req.params.note } };
+    var q = mydb.collection("user").updateOne(myquery, newvalues, function(err, res) {
+        if (err) throw err;
+        else {
+        console.log("1 document updated");
+        console.log(myquery);
+        console.log(newvalues); }
+
+        mydb.close();
+    });
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+
+ });
+
+
 
 
 app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
