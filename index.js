@@ -189,7 +189,58 @@ app.get('/loginVerif/:login/:password', (req,res, next) => {
 
 })
 
+//Retourner la liste des epreuves d'un étudiant
+app.get('/listExams/:idUser', (req,res, next) => {
+    var id = new require('mongodb').ObjectID(req.params.idUser);//req.params.id
+
+    mydb.collection("user").find({_id: id, "isStudent": true}, {projection: {_id: 1, "epreuves": 1}})
+        .toArray(function (err, docs) {
+            if (err) {
+                //console.log(err)
+                res.status(500);
+                return next(err);
+            }
+
+            var dictALL = [];
+            for(item of docs) {
+                if(item.epreuves) {
+                    for(epreuve of item.epreuves) {
+                        console.log(epreuve)
+                        if(epreuve.note == '') {
+                            var dict = {};
+                            var id = epreuve._id;
+                            var annee = epreuve.annee;
+                            var classe = epreuve.classe;
+                            var note = epreuve.note;
+                            var matiere = epreuve.matiere;
+                            var date = epreuve.date;
+                            var type = epreuve.type;
+                            var dict = {};
+                            dict["id"] = epreuve.id
+                            dict["annee"] = epreuve.annee
+                            dict["classe"] = epreuve.classe
+                            dict["matiere"] = epreuve.matiere
+                            dict["date"] = epreuve.date
+                            dict["type"] = epreuve.type
+                            dictALL.push(dict)
+                        }
+
+
+                    }
+                }
+
+                    }
+                    console.log(dictALL)
+            let dictRes = {"epreuves":dictALL}
+
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
+            //console.log(JSON.stringify(dictALL))
+            res.end(JSON.stringify(dictRes))
+        })
+
+})
 //formatted_data
+//http://localhost:3001/savenote/62fe9e9b1c3373234642d8b5/2/15
 app.get('/savenote/:userId/:idNote/:note', (req,res, next) => {
     var id = new require('mongodb').ObjectID(req.params.userId);//req.params.id
 
@@ -203,7 +254,7 @@ app.get('/savenote/:userId/:idNote/:note', (req,res, next) => {
         console.log(myquery);
         console.log(newvalues); }
 
-        mydb.close();
+
     });
     res.setHeader("Content-Type", "application/json; charset=utf-8");
 
